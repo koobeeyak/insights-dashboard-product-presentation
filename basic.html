@@ -1,0 +1,933 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <title>Insights Dashboard Presentation</title>
+  <style type="text/css">
+    body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #222;
+  font-size: 100%;
+}
+
+.slide {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 0; right: 0;
+  background-color: #f7f7f7;
+}
+
+.slide-content {
+  width: 800px;
+  height: 600px;
+  overflow: hidden;
+  margin: 80px auto 0 auto;
+  padding: 30px;
+
+  font-weight: 200;
+  font-size: 200%;
+  line-height: 1.375;
+}
+
+.controls {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+}
+
+.arrow {
+  width: 0; height: 0;
+  border: 30px solid #333;
+  float: left;
+  margin-right: 30px;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.prev {
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+
+  border-left-width: 0;
+  border-right-width: 50px;
+}
+
+.next {
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  border-right-color: transparent;
+
+  border-left-width: 50px;
+  border-right-width: 0;
+}
+
+.prev:hover {
+  border-right-color: #888;
+  cursor: pointer;
+}
+
+.next:hover {
+  border-left-color: #888;
+  cursor: pointer;
+}
+
+h1 {
+  font-size: 300%;
+  line-height: 1.2;
+  text-align: center;
+  margin: 170px 0 0;
+}
+
+h2 {
+  font-size: 100%;
+  line-height: 1.2;
+  margin: 5px 0;
+  text-align: center;
+  font-weight: 200;
+}
+
+h3 {
+  font-size: 140%;
+  line-height: 1.2;
+  border-bottom: 1px solid #aaa;
+  margin: 0;
+  padding-bottom: 15px;
+}
+
+ul {
+  padding: 20px 0 0 60px;
+  font-weight: 200;
+  line-height: 1.375;
+}
+
+.author h1 {
+  font-size: 170%;
+  font-weight: 200;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.author h3 {
+  font-weight: 100;
+  text-align: center;
+  font-size: 95%;
+  border: none;
+}
+
+a {
+  text-decoration: none;
+  color: #44a4dd;
+}
+
+a:hover {
+  color: #66b5ff;
+}
+
+pre {
+  font-size: 60%;
+  line-height: 1.3;
+}
+
+.progress {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  z-index: 1;
+}
+
+.progress-bar {
+  width: 0%;
+  height: 3px;
+  background-color: #b4b4b4;
+
+  -webkit-transition: width 0.05s ease-out;
+  -moz-transition: width 0.05s ease-out;
+  -o-transition: width 0.05s ease-out;
+  transition: width 0.05s ease-out;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 850px) {
+
+  body {
+    font-size: 70%;
+  }
+
+  .slide-content {
+    width: auto;
+  }
+
+  img {
+    width: 100%;
+  }
+
+  h1 {
+    margin-top: 120px;
+  }
+
+  .prev, .prev:hover {
+    border-right-color: rgba(135, 135, 135, 0.5);
+  }
+
+  .next, .next:hover {
+    border-left-color: rgba(135, 135, 135, 0.5);
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 50%;
+    overflow: hidden;
+  }
+
+  .slide-content {
+    padding: 10px;
+    margin-top: 10px;
+    height: 340px;
+  }
+
+  h1 {
+    margin-top: 50px;
+  }
+
+  ul {
+    padding-left: 25px;
+  }
+}
+
+@media print {
+  * {
+    -webkit-print-color-adjust: exact;
+  }
+
+  @page {
+    size: letter;
+  }
+
+  .hidden {
+    display: inline;
+  }
+
+  html {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  body {
+    margin: 0 auto !important;
+    border: 0;
+    padding: 0;
+    float: none !important;
+    overflow: visible;
+    background: none !important;
+    font-size: 52%;
+  }
+
+  .progress, .controls {
+    display: none;
+  }
+
+  .slide {
+    position: static;
+  }
+
+  .slide-content {
+    border: 1px solid #222;
+    margin-top: 0;
+    margin-bottom: 40px;
+    height: 3.5in;
+    overflow: visible;
+  }
+
+  .slide:nth-child(even) {
+    /* 2 slides per page */
+    page-break-before: always;
+  }
+}
+
+/*
+
+github.com style (c) Vasily Polovnyov <vast@whiteants.net>
+
+*/
+
+.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0.5em;
+  color: #333;
+  background: #f8f8f8;
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: #998;
+  font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-subst {
+  color: #333;
+  font-weight: bold;
+}
+
+.hljs-number,
+.hljs-literal,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag .hljs-attr {
+  color: #008080;
+}
+
+.hljs-string,
+.hljs-doctag {
+  color: #d14;
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-selector-id {
+  color: #900;
+  font-weight: bold;
+}
+
+.hljs-subst {
+  font-weight: normal;
+}
+
+.hljs-type,
+.hljs-class .hljs-title {
+  color: #458;
+  font-weight: bold;
+}
+
+.hljs-tag,
+.hljs-name,
+.hljs-attribute {
+  color: #000080;
+  font-weight: normal;
+}
+
+.hljs-regexp,
+.hljs-link {
+  color: #009926;
+}
+
+.hljs-symbol,
+.hljs-bullet {
+  color: #990073;
+}
+
+.hljs-built_in,
+.hljs-builtin-name {
+  color: #0086b3;
+}
+
+.hljs-meta {
+  color: #999;
+  font-weight: bold;
+}
+
+.hljs-deletion {
+  background: #fdd;
+}
+
+.hljs-addition {
+  background: #dfd;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+
+
+  </style>
+</head>
+<body>
+    <div class="progress">
+    <div class="progress-bar"></div>
+  </div>
+
+  <div class="slide" id="slide-1">
+    <section class="slide-content"><p><br></p>
+<h2 id="insights-dashboard"><strong>Insights Dashboard</strong></h2>
+<p><br><br><br></p>
+<h2 id="a-small-look-into-one-of-my-projects-while-partoo-fr">A small look  👀  into one of my projects while @ partoo.fr</h2>
+<h2 id="bauer-xcel-media-feb-15-2019"><em>Bauer Xcel Media, Feb. 15, 2019</em></h2>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-2">
+    <section class="slide-content"><h1 id="partoo"><img src="assets/partoo-logo-white-two.png" alt="Partoo"></h1>
+<h2 id="-qu-est-ce-que-c-est-"><strong>...Qu&#39;est-ce que c&#39;est??</strong> 🤔</h2>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-3">
+    <section class="slide-content"><p>Mission statement, from <a href="http://www.partoo.fr">www.partoo.fr</a>:</p>
+<p><em>Today, one out of three Internet researches is linked to a local activity, such as when you search in Google your activity (for example, &quot;<strong>Paris 12th arrondissement hairdresser</strong>&quot;).</em></p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-4">
+    <section class="slide-content"><p>Continued...</p>
+<p><em>Every day, dozens of millions of people are looking for places like yours on online directories, review websites, social networks, specialized websites or search engines. Thanks to Partoo, your business&#39; information is shown on all the platforms where your potential customers can reach you. You can also start to follow what&#39;s being said about your local business on these platforms!</em></p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-5">
+    <section class="slide-content"><p><del>Mission statement, from <a href="http://www.partoo.fr">www.partoo.fr</a>:</del></p>
+<p>Mission statement, from Philip 👨‍💻</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-6">
+    <section class="slide-content"><h2 id="-img-src-assets-partoo-diffusion-png-alt-partoo-diffuses-on-these-platforms-width-800-"><img src="assets/partoo-diffusion.png" alt="Partoo diffuses on these platforms" width="800"/></h2>
+<p><a href="https://www.partoo.fr/en/">Source</a>: partoo.fr/en</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-7">
+    <section class="slide-content"><p>One of these platforms drives <em>significantly</em> more local search than the others...</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-8">
+    <section class="slide-content"><p>One of these platforms drives <em>significantly</em> more local search than the others...</p>
+<ul>
+<li>starts with a <em>G</em>... 🤔</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-9">
+    <section class="slide-content"><p>One of these platforms drives <em>significantly</em> more local search than the others...</p>
+<ul>
+<li>starts with a <em>G</em>... 🤔</li>
+<li>ends with a <em>-oogle My Business</em> 🤔</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-10">
+    <section class="slide-content"><h2 id="-img-src-assets-google-logo-png-alt-google-width-180-"><img src="assets/google-logo.png" alt="Google" width="180"/></h2>
+<p><br></p>
+<h2 id="-img-src-assets-google-my-business-logo-png-alt-google-my-business-width-210-"><img src="assets/google-my-business-logo.png" alt="Google My Business" width="210"/></h2>
+<h2 id="g-suite-google-my-business"><strong>G Suite:</strong> Google My Business</h2>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-11">
+    <section class="slide-content"><p><br>
+<strong>Google&#39;s share</strong> of search engine queries, 2018</p>
+<ul>
+<li>🇫🇷 France: <strong>91.2%</strong></li>
+<li>🇺🇸 USA: <strong>87.3%</strong></li>
+</ul>
+<p><br><br>
+<a href="https://alphametic.com/global-search-engine-market-share">Source</a>: Alphametic&#39;s 2018 StatCounter Study</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-12">
+    <section class="slide-content"><h1 id="ruth-chris-lincoln-harbor"><a href="https://www.google.com/search?q=ruth+chris+lincoln+harbor">ruth chris lincoln harbor</a></h1>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-13">
+    <section class="slide-content"><h2 id="-img-src-assets-google-restaurant-menu-card-png-alt-google-restaurant-card-width-660-"><img src="assets/google-restaurant-menu-card.png" alt="Google Restaurant Card" width="660"/></h2>
+<p><br></p>
+<h2 id="source-search-engine-land"><a href="https://searchengineland.com/google-showing-restaurant-menus-card-style-search-result-184066">Source</a> Search Engine Land</h2>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-14">
+    <section class="slide-content"><h1><em>le</em> Problem</h1></section>
+  </div>
+  <div class="slide hidden" id="slide-15">
+    <section class="slide-content"><h1><em>le</em> Solution</h1></section>
+  </div>
+  <div class="slide hidden" id="slide-16">
+    <section class="slide-content"><h2 id="-img-src-assets-google-api-release-notes-png-alt-google-api-release-notes-width-800-"><img src="assets/google-api-release-notes.png" alt="Google API Release Notes" width="800"/></h2>
+<p><a href="https://developers.google.com/my-business/content/change-log">Source</a>: Google My Business API Change Log Release Notes</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-17">
+    <section class="slide-content"><p><br><br></p>
+<h4 id="we-should-work-on-this-___-">We should work on this <strong>___</strong>?</h4>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-18">
+    <section class="slide-content"><p><br><br></p>
+<h4 id="we-should-work-on-this-asap-on-our-product-roadmap-">We should work on this ASAP on our product roadmap 👍</h4>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-19">
+    <section class="slide-content"><p><br></p>
+<h3 id="demonstration">Demonstration</h3>
+<p><br>
+How the ⚙️ &#39;s turn @ Partoo in designing, managing, developing a project.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-20">
+    <section class="slide-content"><p><strong>Phil</strong>: I&#39;m the dev 👨‍💻 on the project.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-21">
+    <section class="slide-content"><p><strong>Phil</strong>: I&#39;m the dev 👨‍💻 on the project.</p>
+<p><strong>Ben</strong>: I&#39;m the manager 🕵️‍♂️ on the project.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-22">
+    <section class="slide-content"><p><strong>Phil</strong>: I&#39;m the dev 👨‍💻 on the project.</p>
+<p><strong>Ben</strong>: I&#39;m the manager 🕵️‍♂️ on the project. I&#39;ll plan out Phil&#39;s taskmap with him.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-23">
+    <section class="slide-content"><p><strong>Phil</strong>: I&#39;m the dev 👨‍💻 on the project.</p>
+<p><strong>Ben</strong>: I&#39;m the manager 🕵️‍♂️ on the project. I&#39;ll plan out Phil&#39;s taskmap with him.
+<br> ... also I&#39;ll (QA) test the product when it&#39;s deployed to Staging.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-24">
+    <section class="slide-content"><p><strong>Phil</strong>: I&#39;m the dev 👨‍💻 on the project.</p>
+<p><strong>Ben</strong>: I&#39;m the manager 🕵️‍♂️ on the project. I&#39;ll plan out Phil&#39;s taskmap with him.
+<br> ... also I&#39;ll (QA) test the product when it&#39;s deployed to Staging.
+<br> ... also I&#39;m the CPO!</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-25">
+    <section class="slide-content"><p><strong>Phil</strong>: I&#39;m the dev 👨‍💻 on the project.</p>
+<p><strong>Ben</strong>: I&#39;m the manager 🕵️‍♂️ on the project. I&#39;ll plan out Phil&#39;s taskmap with him.
+<br> ... also I&#39;ll (QA) test the product when it&#39;s deployed to Staging.
+<br> ... also I&#39;m the CPO!</p>
+<p><strong>Matthias</strong>: I&#39;m the designer 👨‍🎨! I&#39;ll work on the prototype while you get started on the back-end!</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-26">
+    <section class="slide-content"><p><br><br><br>
+<strong>Ben</strong>: Hey Phil, let&#39;s get together our Trello cards.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-27">
+    <section class="slide-content"><hr>
+<p><strong>Trello Card: Our End-user/Dev/Micro-service story</strong></p>
+<p>Passing Criteria:</p>
+<h4 id="___">___</h4>
+<h4 id="___">___</h4>
+<hr>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-28">
+    <section class="slide-content"><hr>
+<p><strong>Trello Card: Google Insights SQLAlchemy Model</strong></p>
+<hr>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-29">
+    <section class="slide-content"><pre><code class="lang-json">{
+  <span class="hljs-attr">"locationMetrics"</span>: [
+    {
+      <span class="hljs-attr">"locationName"</span>: <span class="hljs-string">"accounts/123xxx/locations/123xxx"</span>,
+      <span class="hljs-attr">"timeZone"</span>: <span class="hljs-string">"Europe/Paris"</span>,
+      <span class="hljs-attr">"metricValues"</span>: [
+        {
+          <span class="hljs-attr">"metric"</span>: <span class="hljs-string">"QUERIES_DIRECT"</span>,
+          <span class="hljs-attr">"dimensionalValues"</span>: [
+            {
+              <span class="hljs-attr">"metricOption"</span>: <span class="hljs-string">"AGGREGATED_DAILY"</span>,
+              <span class="hljs-attr">"timeDimension"</span>: {
+                <span class="hljs-attr">"timeRange"</span>: {
+                  <span class="hljs-attr">"startTime"</span>: <span class="hljs-string">"2018-05-01T22:00:00Z"</span>
+                }
+              },
+              <span class="hljs-attr">"value"</span>: <span class="hljs-string">"95"</span>
+            },
+            {
+              <span class="hljs-attr">"metricOption"</span>: <span class="hljs-string">"AGGREGATED_DAILY"</span>,
+              <span class="hljs-attr">"timeDimension"</span>: {
+                <span class="hljs-attr">"timeRange"</span>: {
+                  <span class="hljs-attr">"startTime"</span>: <span class="hljs-string">"2018-05-02T22:00:00Z"</span>
+                }
+              },
+              <span class="hljs-attr">"value"</span>: <span class="hljs-string">"94"</span>
+            }
+          ]
+        },
+        {
+          <span class="hljs-attr">"metric"</span>: <span class="hljs-string">"QUERIES_INDIRECT"</span>,
+          <span class="hljs-attr">"dimensionalValues"</span>: [
+            {
+              <span class="hljs-attr">"metricOption"</span>: <span class="hljs-string">"AGGREGATED_DAILY"</span>,
+              <span class="hljs-attr">"timeDimension"</span>: {
+                <span class="hljs-attr">"timeRange"</span>: {
+                  <span class="hljs-attr">"startTime"</span>: <span class="hljs-string">"2018-05-01T22:00:00Z"</span>
+                }
+              },
+              <span class="hljs-attr">"value"</span>: <span class="hljs-string">"5"</span>
+            },
+            {
+              <span class="hljs-attr">"metricOption"</span>: <span class="hljs-string">"AGGREGATED_DAILY"</span>,
+              <span class="hljs-attr">"timeDimension"</span>: {
+                <span class="hljs-attr">"timeRange"</span>: {
+                  <span class="hljs-attr">"startTime"</span>: <span class="hljs-string">"2018-05-02T22:00:00Z"</span>
+                }
+              },
+              <span class="hljs-attr">"value"</span>: <span class="hljs-string">"7"</span>
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-30">
+    <section class="slide-content"><p><br></p>
+<pre><code class="lang-python"><span class="hljs-comment"># db/models/analytics.py</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Analytics</span><span class="hljs-params">(Base)</span>:</span>
+    business_id = Column(String, primary_key=<span class="hljs-keyword">True</span>, nullable=<span class="hljs-keyword">False</span>)
+    date = Column(Date, primary_key=<span class="hljs-keyword">True</span>, nullable=<span class="hljs-keyword">False</span>)
+    partner = Column(String, primary_key=<span class="hljs-keyword">True</span>, nullable=<span class="hljs-keyword">False</span>)
+    partner_business_id = Column(String, nullable=<span class="hljs-keyword">False</span>)
+    timezone = Column(String)
+    queries_direct = Column(Integer, default=<span class="hljs-number">0</span>)
+    queries_indirect = Column(Integer, default=<span class="hljs-number">0</span>)
+    views_maps = Column(Integer, default=<span class="hljs-number">0</span>)
+    views_search = Column(Integer, default=<span class="hljs-number">0</span>)
+    actions_website = Column(Integer, default=<span class="hljs-number">0</span>)
+    <span class="hljs-comment"># ...</span>
+</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-31">
+    <section class="slide-content"><p><em>Back-end qualifiers</em></p>
+<ul>
+<li>script to fetch endpoint from Insights API (w/ authentication), format to <code>db.models.Analytics</code>, save</li>
+<li>CRON run script every day and generate report<ul>
+<li>failures logged in report and to Sentry</li>
+</ul>
+</li>
+<li>hook on <code>db.models.Businesses</code> creation to pull max Insights possible on new businesses signing up w/ Partoo</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-32">
+    <section class="slide-content"><p><strong>Matthias</strong>: 👋 Hey, here&#39;s our Invision prototype for the project.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-33">
+    <section class="slide-content"><p><strong>Matthias</strong>: 👋 Hey, here&#39;s our Invision prototype for the project.
+<br> ... I&#39;m the designer, remember?</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-34">
+    <section class="slide-content"><p><em>New!</em> API resource: <ins>Analytics</ins>.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-35">
+    <section class="slide-content"><p><em>New!</em> API resource: <ins>Analytics</ins>.</p>
+<ul>
+<li>apply the same permissions for roles as <ins>Businesses</ins></li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-36">
+    <section class="slide-content"><p><em>New!</em> API resource: <ins>Analytics</ins>.</p>
+<ul>
+<li>apply the same permissions for roles as <ins>Businesses</ins></li>
+<li>at SQL query, convert <code>DATE</code> to <code>TIMESTAMP WITH TIMEZONE</code> on <code>Analytics.timezone</code></li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-37">
+    <section class="slide-content"><p><br><br>
+Cool.
+<br><br>👀 <strong>But what will all this end up looking like?</strong></p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-38">
+    <section class="slide-content"><h2 id="-img-src-assets-partoo-analytics-png-alt-partoo-analytics-width-800-"><img src="assets/partoo-analytics.png" alt="Partoo Analytics" width="800"/></h2>
+<p><a href="https://www.partoo.fr/en/">Source</a>: partoo.fr</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-39">
+    <section class="slide-content"><h2 id="-img-src-assets-partoo-analytics-png-alt-partoo-analytics-width-800-"><img src="assets/partoo-analytics.png" alt="Partoo Analytics" width="800"/></h2>
+<p><a href="https://www.partoo.fr/en/">Source</a>: partoo.fr</p>
+<p>Which components?</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-40">
+    <section class="slide-content"><h2 id="airbnb-react-dates-date-picker"><a href="https://github.com/airbnb/react-dates">Airbnb React-dates Date Picker</a></h2>
+<h2 id="-img-src-assets-airbnb-react-date-picker-png-alt-airbnb-react-date-picker-width-800-"><img src="assets/airbnb-react-date-picker.png" alt="Airbnb React Date Picker" width="800"/></h2>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-41">
+    <section class="slide-content"><p>Graphing library we can use with React</p>
+<ul>
+<li><code>$ npm install react-linechart</code></li>
+<li><code>$ npm install react-chartkick</code></li>
+<li><code>$ npm install recharts</code></li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-42">
+    <section class="slide-content"><p>Graphing library we can use with React</p>
+<ul>
+<li><code>$ npm install react-linechart</code></li>
+<li><code>$ npm install react-chartkick</code></li>
+<li><code>$ npm install recharts</code></li>
+<li>...</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-43">
+    <section class="slide-content"><h1 id="d3-js"><a href="https://d3js.org/">d3.js</a></h1>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-44">
+    <section class="slide-content"><p><br>
+<em>le</em> <ins><strong>D•O•M</strong></ins></p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-45">
+    <section class="slide-content"><p><br>
+<em>le</em> <ins><strong>D•O•M</strong></ins></p>
+<p><strong>React</strong>: Hey, let me touch that!
+<br><strong>d3</strong>: Hey, me too!</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-46">
+    <section class="slide-content"><h1 id="svg-br-refs"><code>&lt;svg/&gt;</code>,<br>&amp; refs</h1>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-47">
+    <section class="slide-content"><p><strong>d3 API</strong></p>
+<ul>
+<li><code>d3-shape</code>, <code>d3-scale</code>, <code>d3-path</code>, ...</li>
+<li>lines, fills, shapes API</li>
+<li>x, y axis domain &amp; range</li>
+<li><del><code>d3-selection</code></del></li>
+</ul>
+<p><br>
+<strong>React <code>render()</code></strong></p>
+<ul>
+<li><code>&lt;svg/&gt;</code></li>
+<li><code>onMouseHover()</code>, <code>onFocus</code></li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-48">
+    <section class="slide-content"><p>→ Back to front end application/application overall.</p>
+<ul>
+<li>check for request concurrency (redux-saga), paginations</li>
+<li>heavy load test as much as possible</li>
+<li>repeat above for a deploy to staging</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-49">
+    <section class="slide-content"><p>Nice-to-have 🙏:</p>
+<p> ...more load testing! Post-deploy stress testing (staging)!</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-50">
+    <section class="slide-content"><h3 id="u-x-design-">U.X. Design 🕶</h3>
+<p> → lessons learned</p>
+<ul>
+<li>user &quot;lands&quot; on the page, give them something actionable</li>
+<li>don&#39;t busy your application to make every possible data fetch, where it&#39;s not realistic</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-51">
+    <section class="slide-content"><h3 id="u-x-design-">U.X. Design 🕶</h3>
+<p> → lessons learned</p>
+<ul>
+<li>user &quot;lands&quot; on the page, give them something actionable</li>
+<li>don&#39;t busy your application to make every possible data fetch, where it&#39;s not realistic</li>
+<li>if you do that, <em>further optimizations needed than what I pushed to Staging and then Production!</em><ul>
+<li>optimize db query with timezone</li>
+<li>websocket</li>
+<li>at least concurrency</li>
+</ul>
+</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden author-slide" id="slide-52">
+    <section class="slide-content"><div class="author">
+  <h1 class="name">Philip Kubiak</h1>
+    <h3 class="url">
+      <a href="https://github.com/tucobenedicto">https://github.com/tucobenedicto</a>
+    </h3>
+</div>
+</section>
+  </div>
+
+  <div class="controls">
+    <div class="arrow prev"></div>
+    <div class="arrow next"></div>
+  </div>
+
+
+  <script type="text/javascript">
+    /**
+ * Returns the current page number of the presentation.
+ */
+function currentPosition() {
+  return parseInt(document.querySelector('.slide:not(.hidden)').id.slice(6));
+}
+
+
+/**
+ * Navigates forward n pages
+ * If n is negative, we will navigate in reverse
+ */
+function navigate(n) {
+  var position = currentPosition();
+  var numSlides = document.getElementsByClassName('slide').length;
+
+  /* Positions are 1-indexed, so we need to add and subtract 1 */
+  var nextPosition = (position - 1 + n) % numSlides + 1;
+
+  /* Normalize nextPosition in-case of a negative modulo result */
+  nextPosition = (nextPosition - 1 + numSlides) % numSlides + 1;
+
+  document.getElementById('slide-' + position).classList.add('hidden');
+  document.getElementById('slide-' + nextPosition).classList.remove('hidden');
+
+  updateProgress();
+  updateURL();
+  updateTabIndex();
+}
+
+
+/**
+ * Updates the current URL to include a hashtag of the current page number.
+ */
+function updateURL() {
+  try {
+    window.history.replaceState({} , null, '#' + currentPosition());
+  } catch (e) {
+    window.location.hash = currentPosition();
+  }
+}
+
+
+/**
+ * Sets the progress indicator.
+ */
+function updateProgress() {
+  var progressBar = document.querySelector('.progress-bar');
+
+  if (progressBar !== null) {
+    var numSlides = document.getElementsByClassName('slide').length;
+    var position = currentPosition() - 1;
+    var percent = (numSlides === 1) ? 100 : 100 * position / (numSlides - 1);
+    progressBar.style.width = percent.toString() + '%';
+  }
+}
+
+
+/**
+ * Removes tabindex property from all links on the current slide, sets
+ * tabindex = -1 for all links on other slides. Prevents slides from appearing
+ * out of control.
+ */
+function updateTabIndex() {
+  var allLinks = document.querySelectorAll('.slide a');
+  var position = currentPosition();
+  var currentPageLinks = document.getElementById('slide-' + position).querySelectorAll('a');
+  var i;
+
+  for (i = 0; i < allLinks.length; i++) {
+    allLinks[i].setAttribute('tabindex', -1);
+  }
+
+  for (i = 0; i < currentPageLinks.length; i++) {
+    currentPageLinks[i].removeAttribute('tabindex');
+  }
+}
+
+/**
+ * Determines whether or not we are currently in full screen mode
+ */
+function isFullScreen() {
+  return document.fullscreenElement ||
+         document.mozFullScreenElement ||
+         document.webkitFullscreenElement ||
+         document.msFullscreenElement;
+}
+
+/**
+ * Toggle fullScreen mode on document element.
+ * Works on chrome (>= 15), firefox (>= 9), ie (>= 11), opera(>= 12.1), safari (>= 5).
+ */
+function toggleFullScreen() {
+  /* Convenient renames */
+  var docElem = document.documentElement;
+  var doc = document;
+
+  docElem.requestFullscreen =
+      docElem.requestFullscreen ||
+      docElem.msRequestFullscreen ||
+      docElem.mozRequestFullScreen ||
+      docElem.webkitRequestFullscreen.bind(docElem, Element.ALLOW_KEYBOARD_INPUT);
+
+  doc.exitFullscreen =
+      doc.exitFullscreen ||
+      doc.msExitFullscreen ||
+      doc.mozCancelFullScreen ||
+      doc.webkitExitFullscreen;
+
+  isFullScreen() ? doc.exitFullscreen() : docElem.requestFullscreen();
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  // Update the tabindex to prevent weird slide transitioning
+  updateTabIndex();
+
+  // If the location hash specifies a page number, go to it.
+  var page = window.location.hash.slice(1);
+  if (page) {
+    navigate(parseInt(page) - 1);
+  }
+
+  document.onkeydown = function (e) {
+    var kc = e.keyCode;
+
+    // left, down, H, J, backspace, PgUp - BACK
+    // up, right, K, L, space, PgDn - FORWARD
+    // enter - FULLSCREEN
+    if (kc === 37 || kc === 40 || kc === 8 || kc === 72 || kc === 74 || kc === 33) {
+      navigate(-1);
+    } else if (kc === 38 || kc === 39 || kc === 32 || kc === 75 || kc === 76 || kc === 34) {
+      navigate(1);
+    } else if (kc === 13) {
+      toggleFullScreen();
+    }
+  };
+
+  if (document.querySelector('.next') && document.querySelector('.prev')) {
+    document.querySelector('.next').onclick = function (e) {
+      e.preventDefault();
+      navigate(1);
+    };
+
+    document.querySelector('.prev').onclick = function (e) {
+      e.preventDefault();
+      navigate(-1);
+    };
+  }
+});
+
+
+  </script>
+</body>
+</html>
